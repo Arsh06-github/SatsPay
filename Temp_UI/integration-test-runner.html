@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SatsPay Integration Test Runner</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .test-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 2px solid #333;
+        }
+        
+        .test-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .status-card h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .test-summary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .test-summary h2 {
+            margin: 0 0 20px 0;
+            font-size: 2em;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 SatsPay Integration Test Runner</h1>
+        
+        <div class="test-controls">
+            <button class="btn btn-primary" onclick="runBasicTests()">
+                <span id="basic-loading" class="loading hidden"></span>
+                Run Basic Tests
+            </button>
+            <button class="btn btn-secondary" onclick="runWorkflowTests()">
+                <span id="workflow-loading" class="loading hidden"></span>
+                Run Workflow Tests
+            </button>
+            <button class="btn btn-success" onclick="runCompleteVerification()">
+                <span id="complete-loading" class="loading hidden"></span>
+                Complete Verification
+            </button>
+            <button class="btn btn-primary" onclick="clearOutput()">Clear Output</button>
+            <button class="btn btn-secondary" onclick="exportResults()">Export Results</button>
+        </div>
+        
+        <div class="test-status" id="test-status">
+            <div class="status-card">
+                <h3>Test Progress</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div id="progress-text">Ready to run tests</div>
+            </div>
+            
+            <div class="status-card">
+                <h3>Component Status</h3>
+                <div id="component-status">
+                    <div class="status-item">
+                        <span>Checking components...</span>
+                        <span class="status-badge badge-warning">Pending</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>Test Results</h3>
+                <div id="test-results">
+                    <div class="status-item">
+                        <span>No tests run yet</span>
+                        <span class="status-badge badge-warning">Waiting</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-output" id="test-output">
+            <div style="color: #00bfff;">SatsPay Integration Test Runner v1.0.0</div>
+            <div style="color: #ffff00;">Ready to run integration tests...</div>
+            <div style="color: #ff6b6b;">Click a button above to start testing</div>
+            <div>═══════════════════════════════════════════════════════════════</div>
+        </div>
+        
+        <div class="test-summary hidden" id="test-summary">
+            <h2>Test Summary</h2>
+            <div class="summary-stats" id="summary-stats">
+                <!-- Summary stats will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Load SatsPay Application Scripts -->
+    <script src="js/storage-manager.js"></script>
+    <script src="js/state-manager.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/integration-test.js"></script>
+    <script src="js/workflow-validator.js"></script>
+    <script src="js/integration-verifier.js"></script>
+
+    <script>
+        let currentTestSuite = null;
+        let testResults = {};
+        
+        // Override console methods to capture output
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+        
+        function captureConsoleOutput() {
+            const output = document.getElementById('test-output');
+            
+            console.log = function(...args) {
+                originalConsole.log(...args);
+                appendToOutput(args.join(' '), '#00ff00');
+            };
+            
+            console.error = function(...args) {
+                originalConsole.error(...args);
+                appendToOutput('ERROR: ' + args.join(' '), '#ff6b6b');
+            };
+            
+            console.warn = function(...args) {
+                originalConsole.warn(...args);
+                appendToOutput('WARNING: ' + args.join(' '), '#ffff00');
+            };
+            
+            console.info = function(...args) {
+                originalConsole.info(...args);
+                appendToOutput('INFO: ' + args.join(' '), '#00bfff');
+            };
+        }
+        
+        function appendToOutput(text, color = '#00ff00') {
+            const output = document.getElementById('test-output');
+            const div = document.createElement('div');
+            div.style.color = color;
+            div.textContent = text;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function updateProgress(percentage, text) {
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            progressFill.style.width = percentage + '%';
+            progressText.textContent = text;
+        }
+        
+        function updateComponentStatus(components) {
+            const statusContainer = document.getElementById('component-status');
+            statusContainer.innerHTML = '';
+            
+            Object.entries(components).forEach(([name, status]) => {
+                const statusItem = document.createElement('div');
+                statusItem.className = 'status-item';
+                
+                const badgeClass = status === 'available' ? 'badge-success' : 
+                                 status === 'missing' ? 'badge-warning' : 'badge-error';
+                
+                statusItem.innerHTML = `
+                    <span>${name}</span>
+                    <span class="status-badge ${badgeClass}">${status}</span>
+                `;
+                
+                statusContainer.appendChild(statusItem);
+            });
+        }
+        
+        function updateTestResults(results) {
+            const resultsContainer = document.getElementById('test-results');
+            resultsContainer.innerHTML = '';
+            
+            results.forEach(result => {
+                const statusItem = document.createElement('div');
+                statusItem.className = 'status-item';
+                
+                const badgeClass = result.passed ? 'badge-success' : 'badge-error';
+                const badgeText = result.passed ? 'PASSED' : 'FAILED';
+                
+                statusItem.innerHTML = `
+                    <span>${result.test || result.phase || result.workflow}</span>
+                    <span class="status-badge ${badgeClass}">${badgeText}</span>
+                `;
+                
+                resultsContainer.appendChild(statusItem);
+            });
+        }
+        
+        function showTestSummary(summary) {
+            const summaryContainer = document.getElementById('test-summary');
+            const statsContainer = document.getElementById('summary-stats');
+            
+            statsContainer.innerHTML = `
+                <div class="stat-item">
+                    <span class="stat-number">${summary.total || summary.totalTests || summary.totalPhases || 0}</span>
+                    <span class="stat-label">Total Tests</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">${summary.passed || summary.passedTests || summary.passedPhases || 0}</span>
+                    <span class="stat-label">Passed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">${summary.failed || summary.failedTests || summary.failedPhases || 0}</span>
+                    <span class="stat-label">Failed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">${summary.successRate || 0}%</span>
+                    <span class="stat-label">Success Rate</span>
+                </div>
+            `;
+            
+            summaryContainer.classList.remove('hidden');
+        }
+        
+        function showLoading(buttonId) {
+            const loading = document.getElementById(buttonId + '-loading');
+            if (loading) {
+                loading.classList.remove('hidden');
+            }
+        }
+        
+        function hideLoading(buttonId) {
+            const loading = document.getElementById(buttonId + '-loading');
+            if (loading) {
+                loading.classList.add('hidden');
+            }
+        }
+        
+        async function runBasicTests() {
+            showLoading('basic');
+            updateProgress(0, 'Starting basic tests...');
+            
+            try {
+                appendToOutput('🚀 Starting Basic Integration Tests...', '#00bfff');
+                
+                const testSuite = new IntegrationTestSuite();
+                await testSuite.runAllTests();
+                
+                const summary = testSuite.generateTestReport();
+                testResults.basic = summary;
+                
+                updateTestResults(testSuite.testResults);
+                updateProgress(100, 'Basic tests completed');
+                showTestSummary(summary);
+                
+                appendToOutput('✅ Basic tests completed successfully!', '#00ff00');
+                
+            } catch (error) {
+                appendToOutput('❌ Basic tests failed: ' + error.message, '#ff6b6b');
+                updateProgress(100, 'Basic tests failed');
+            } finally {
+                hideLoading('basic');
+            }
+        }
+        
+        async function runWorkflowTests() {
+            showLoading('workflow');
+            updateProgress(0, 'Starting workflow tests...');
+            
+            try {
+                appendToOutput('👤 Starting Workflow Validation Tests...', '#00bfff');
+                
+                const workflowValidator = new WorkflowValidator();
+                await workflowValidator.validateAllWorkflows();
+                
+                const summary = workflowValidator.generateValidationReport();
+                testResults.workflow = summary;
+                
+                updateTestResults(workflowValidator.validationResults);
+                updateProgress(100, 'Workflow tests completed');
+                showTestSummary(summary);
+                
+                appendToOutput('✅ Workflow tests completed successfully!', '#00ff00');
+                
+            } catch (error) {
+                appendToOutput('❌ Workflow tests failed: ' + error.message, '#ff6b6b');
+                updateProgress(100, 'Workflow tests failed');
+            } finally {
+                hideLoading('workflow');
+            }
+        }
+        
+        async function runCompleteVerification() {
+            showLoading('complete');
+            updateProgress(0, 'Starting complete verification...');
+            
+            try {
+                appendToOutput('🔍 Starting Complete Integration Verification...', '#00bfff');
+                
+                const verifier = new IntegrationVerifier();
+                await verifier.runCompleteVerification();
+                
+                const summary = verifier.generateComprehensiveReport();
+                testResults.complete = summary;
+                
+                updateComponentStatus(verifier.componentStatus);
+                updateTestResults(verifier.verificationResults);
+                updateProgress(100, 'Complete verification finished');
+                showTestSummary(summary);
+                
+                appendToOutput('✅ Complete verification finished!', '#00ff00');
+                
+            } catch (error) {
+                appendToOutput('❌ Complete verification failed: ' + error.message, '#ff6b6b');
+                updateProgress(100, 'Complete verification failed');
+            } finally {
+                hideLoading('complete');
+            }
+        }
+        
+        function clearOutput() {
+            const output = document.getElementById('test-output');
+            output.innerHTML = `
+                <div style="color: #00bfff;">SatsPay Integration Test Runner v1.0.0</div>
+                <div style="color: #ffff00;">Output cleared - Ready for new tests...</div>
+                <div>═══════════════════════════════════════════════════════════════</div>
+            `;
+            
+            updateProgress(0, 'Ready to run tests');
+            document.getElementById('test-summary').classList.add('hidden');
+        }
+        
+        function exportResults() {
+            if (Object.keys(testResults).length === 0) {
+                appendToOutput('⚠️ No test results to export. Run some tests first.', '#ffff00');
+                return;
+            }
+            
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                version: '1.0.0',
+                results: testResults,
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `satspay-integration-test-results-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            appendToOutput('📁 Test results exported successfully!', '#00ff00');
+        }
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            captureConsoleOutput();
+            appendToOutput('🎯 Integration Test Runner initialized', '#00bfff');
+            appendToOutput('📋 Ready to run tests - select an option above', '#ffff00');
+            
+            // Check component availability on load
+            setTimeout(() => {
+                const components = {
+                    'StateManager': window.stateManager ? 'available' : 'missing',
+                    'StorageManager': window.enhancedStorageManager ? 'available' : 'missing',
+
+                    'Router': window.Router ? 'available' : 'missing',
+                    'NavigationManager': window.NavigationManager ? 'available' : 'missing'
+                };
+                
+                updateComponentStatus(components);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

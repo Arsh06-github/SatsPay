@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="breezGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0891B2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="40" height="40" rx="8" fill="url(#breezGradient)"/>
+  <path d="M15 12l10 6-10 6v-4l6-2-6-2v-4z" fill="white" opacity="0.9"/>
+  <path d="M25 16l5 4-5 4v-2l3-2-3-2v-2z" fill="white" opacity="0.7"/>
+</svg>

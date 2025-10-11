@@ -1,0 +1,72 @@
+{
+  "name": "satspay-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build:android": "cd android && ./gradlew assembleRelease",
+    "build:ios": "cd ios && xcodebuild -workspace SatsPay.xcworkspace -scheme SatsPay -configuration Release -destination generic/platform=iOS -archivePath SatsPay.xcarchive archive"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.72.0",
+    "@react-navigation/native": "^6.1.0",
+    "@react-navigation/stack": "^6.3.0",
+    "@react-navigation/bottom-tabs": "^6.5.0",
+    "react-native-screens": "^3.20.0",
+    "react-native-safe-area-context": "^4.5.0",
+    "react-native-gesture-handler": "^2.10.0",
+    "react-native-reanimated": "^3.1.0",
+    "react-native-vector-icons": "^9.2.0",
+    
+    "@react-native-async-storage/async-storage": "^1.18.0",
+    "react-native-haptic-feedback": "^2.0.0",
+    "@react-native-clipboard/clipboard": "^1.11.0",
+    "react-native-biometrics": "^3.0.0",
+    "react-native-keychain": "^8.1.0",
+    "@react-native-community/netinfo": "^9.3.0",
+    
+    "react-native-camera": "^4.2.0",
+    "react-native-qrcode-scanner": "^1.5.0",
+    "react-native-permissions": "^3.8.0",
+    
+    "react-native-push-notification": "^8.1.0",
+    "@react-native-community/push-notification-ios": "^1.11.0",
+    
+    "bitcoinjs-lib": "^6.1.0",
+    "@getalby/sdk": "^3.0.0",
+    "zustand": "^4.3.0",
+    "node-cron": "^3.0.0",
+    
+    "@supabase/supabase-js": "^2.21.0",
+    
+    "react-native-svg": "^13.9.0",
+    "react-native-linear-gradient": "^2.6.0",
+    "react-native-device-info": "^10.6.0",
+    "react-native-orientation-locker": "^1.5.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.20.0",
+    "@babel/runtime": "^7.20.0",
+    "@react-native/eslint-config": "^0.72.0",
+    "@react-native/metro-config": "^0.72.0",
+    "@tsconfig/react-native": "^3.0.0",
+    "@types/react": "^18.0.24",
+    "@types/react-test-renderer": "^18.0.0",
+    "babel-jest": "^29.2.1",
+    "eslint": "^8.19.0",
+    "jest": "^29.2.1",
+    "metro-react-native-babel-preset": "0.76.5",
+    "prettier": "^2.4.1",
+    "react-test-renderer": "18.2.0",
+    "typescript": "4.8.4"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

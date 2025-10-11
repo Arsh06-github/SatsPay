@@ -1,0 +1,96 @@
+{
+  "name": "satspay",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@getalby/sdk": "^6.0.1",
+    "@supabase/supabase-js": "^2.75.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "bitcoinjs-lib": "^7.0.0",
+    "jsqr": "^1.4.0",
+    "node-cron": "^4.2.1",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4",
+    "zustand": "^5.0.8"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
+    "supabase:setup": "node scripts/setup-supabase.js",
+    "supabase:start": "docker-compose up -d",
+    "supabase:stop": "docker-compose down",
+    "supabase:logs": "docker-compose logs -f",
+    "nigiri:setup": "node scripts/setup-nigiri.js",
+    "nigiri:start": "docker-compose up -d bitcoin electrs lnd faucet-api",
+    "nigiri:stop": "docker-compose stop bitcoin electrs lnd faucet-api",
+    "nigiri:logs": "docker-compose logs -f bitcoin electrs lnd faucet-api",
+    "dev:full": "docker-compose up -d && npm start",
+    "dev:bitcoin": "docker-compose up -d bitcoin electrs lnd faucet-api",
+    "build:analyze": "ANALYZE=true npm run build",
+    "build:production": "NODE_ENV=production npm run build",
+    "performance:test": "node scripts/performance-test.js",
+    "performance:lighthouse": "lighthouse http://localhost:3000 --output=html --output-path=./performance-results/lighthouse-report.html",
+    "optimize:images": "imagemin src/assets/images/* --out-dir=src/assets/images/optimized",
+    "bundle:analyze": "npx webpack-bundle-analyzer build/static/js/*.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "@types/node-cron": "^3.0.11",
+    "assert": "^2.1.0",
+    "autoprefixer": "^10.4.21",
+    "buffer": "^6.0.3",
+    "compression-webpack-plugin": "^10.0.0",
+    "crypto-browserify": "^3.12.1",
+    "css-minimizer-webpack-plugin": "^5.0.0",
+    "image-webpack-loader": "^8.1.0",
+    "imagemin": "^8.0.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "imagemin-webp": "^7.0.0",
+    "lighthouse": "^11.0.0",
+    "mini-css-extract-plugin": "^2.7.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "postcss": "^8.5.6",
+    "process": "^0.11.10",
+    "puppeteer": "^21.0.0",
+    "stream-browserify": "^3.0.0",
+    "supabase": "^2.48.3",
+    "tailwindcss": "^4.1.14",
+    "terser-webpack-plugin": "^5.3.0",
+    "typescript": "^5.9.3",
+    "url": "^0.11.4",
+    "util": "^0.12.5",
+    "webpack-bundle-analyzer": "^4.9.0"
+  }
+}

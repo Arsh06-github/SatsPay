@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SatsPay - Bitcoin wallet management web application">
+    <meta name="keywords" content="bitcoin, wallet, payments, cryptocurrency, satspay">
+    <meta name="author" content="SatsPay">
+    <meta name="theme-color" content="#1e3a8a">
+    
+    <title>SatsPay - Bitcoin Wallet Management</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="preload" href="js/app.js" as="script">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/autopay-styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Enhanced Storage and State Management -->
+    <script src="js/storage-manager.js"></script>
+    <script src="js/state-manager.js"></script>
+    <script src="js/state-sync.js"></script>
+    <script src="js/state-test.js"></script>
+    <script src="js/accessibility-manager.js"></script>
+    
+    <!-- Performance and Polish Scripts -->
+    <script src="js/performance-optimizer.js"></script>
+    <script src="js/error-handler.js"></script>
+    <script src="js/visual-polish.js"></script>
+    <script src="js/browser-compatibility.js"></script>
+    <script src="js/performance-report.js"></script>
+    
+    <!-- Core Manager Scripts -->
+    <script src="js/user-profile-manager.js"></script>
+    <script src="js/wallet-connection-manager.js"></script>
+    <script src="js/local-faucet-manager.js"></script>
+    <script src="js/payment-manager.js"></script>
+    <script src="js/transaction-manager.js"></script>
+    
+    <!-- Wallet Debug Helper -->
+    <script src="js/wallet-debug.js"></script>
+    
+    <!-- Integration Testing Scripts -->
+    <script src="js/integration-test.js"></script>
+    <script src="js/workflow-validator.js"></script>
+    <script src="js/integration-verifier.js"></script>
+    <script src="js/final-integration-check.js"></script>
+    <script src="js/wallet-integration-test.js"></script>
+    <script src="js/wallet-flow-verifier.js"></script>
+    <script src="js/error-suppression-test.js"></script>
+    <script src="js/navigation-fix.js"></script>
+    <script src="js/navigation-test.js"></script>
+    <script src="js/ui-fixes.js"></script>
+    <script src="js/wallet-status-override.js"></script>
+    <script src="js/fixes-verification.js"></script>
+    <script src="js/autopay-manager.js"></script>
+    <script src="js/autopay-test.js"></script>
+    <script src="js/wallet-status-test.js"></script>
+    <script src="js/extension-wallet-test.js"></script>
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Screen reader announcements -->
+    <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+    <div id="sr-status" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+    
+    <!-- Header with navigation -->
+    <header class="header" role="banner">
+        <nav class="nav" role="navigation" aria-label="Main navigation">
+            <div class="nav-brand">
+                <h1 class="logo">SatsPay</h1>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link active" data-section="home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#pay" class="nav-link" data-section="pay">Pay</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#transactions" class="nav-link" data-section="transactions">Transactions</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#autopay" class="nav-link" data-section="autopay">Autopay</a>
+                </li>
+            </ul>
+            <button class="nav-toggle" id="nav-toggle" 
+                    aria-label="Toggle navigation menu" 
+                    aria-expanded="false" 
+                    aria-controls="nav-menu">
+                <span class="hamburger" aria-hidden="true"></span>
+                <span class="sr-only">Menu</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Toast notifications -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+    
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden" role="status" aria-live="assertive">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- Main content area -->
+    <main id="main-content" class="main" role="main">
+        <!-- Authentication section (initial view) -->
+        <section id="auth-section" class="section auth-section hidden" aria-labelledby="auth-heading">
+            <div class="container">
+                <h2 id="auth-heading" class="section-title">Welcome to SatsPay</h2>
+                <div class="auth-container">
+                    <!-- Sign In Form -->
+                    <div class="auth-form-container glass-card card-hover-lift" id="signin-container">
+                        <form class="auth-form" id="signin-form" novalidate>
+                            <h3 class="form-title gradient-text">Sign In</h3>
+                            <div class="form-group">
+                                <label for="signin-email" class="form-label">Email</label>
+                                <input type="email" id="signin-email" name="email" class="form-input" 
+                                       required 
+                                       aria-describedby="signin-email-error"
+                                       autocomplete="email"
+                                       placeholder="Enter your email address">
+                                <span class="form-error" id="signin-email-error" role="alert" aria-live="polite"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="signin-pin" class="form-label">PIN</label>
+                                <input type="password" id="signin-pin" name="pin" class="form-input" 
+                                       required 
+                                       aria-describedby="signin-pin-error"
+                                       autocomplete="current-password"
+                                       placeholder="Enter your 4-digit PIN"
+                                       maxlength="4"
+                                       pattern="[0-9]{4}">
+                                <span class="form-error" id="signin-pin-error" role="alert" aria-live="polite"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-liquid ripple">Sign In</button>
+                            <p class="auth-switch">
+                                Don't have an account? 
+                                <button type="button" class="btn-link" id="show-signup">Sign Up</button>
+                            </p>
+                        </form>
+                    </div>
+
+                    <!-- Sign Up Form -->
+                    <div class="auth-form-container glass-card card-hover-lift hidden" id="signup-container">
+                        <form class="auth-form" id="signup-form" novalidate>
+                            <h3 class="form-title gradient-text">Sign Up</h3>
+                            <div class="form-group">
+                                <label for="signup-name" class="form-label">Name</label>
+                                <input type="text" id="signup-name" name="name" class="form-input" 
+                                       required 
+                                       aria-describedby="signup-name-error"
+                                       autocomplete="name"
+                                       placeholder="Enter your full name">
+                                <span class="form-error" id="signup-name-error" role="alert" aria-live="polite"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-email" class="form-label">Email</label>
+                                <input type="email" id="signup-email" name="email" class="form-input" 
+                                       required 
+                                       aria-describedby="signup-email-error"
+                                       autocomplete="email"
+                                       placeholder="Enter your email address">
+                                <span class="form-error" id="signup-email-error" role="alert" aria-live="polite"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-age" class="form-label">Age</label>
+                                <input type="number" id="signup-age" name="age" class="form-input" 
+                                       min="18" 
+                                       max="120"
+                                       required 
+                                       aria-describedby="signup-age-error signup-age-help"
+                                       placeholder="Enter your age">
+                                <div id="signup-age-help" class="form-help">You must be at least 18 years old</div>
+                                <span class="form-error" id="signup-age-error" role="alert" aria-live="polite"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-pin" class="form-label">PIN (4 digits)</label>
+                                <input type="password" id="signup-pin" name="pin" class="form-input" 
+                                       pattern="[0-9]{4}" 
+                                       required 
+                                       aria-describedby="signup-pin-error signup-pin-help"
+                                       autocomplete="new-password"
+                                       placeholder="Create a 4-digit PIN"
+                                       maxlength="4">
+                                <div id="signup-pin-help" class="form-help">Choose a secure 4-digit PIN for account access</div>
+                                <span class="form-error" id="signup-pin-error" role="alert" aria-live="polite"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-liquid ripple">Sign Up</button>
+                            <p class="auth-switch">
+                                Already have an account? 
+                                <button type="button" class="btn-link" id="show-signin">Sign In</button>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Home section -->
+        <section id="home-section" class="section home-section" aria-labelledby="home-heading">
+            <div class="container">
+                <h2 id="home-heading" class="section-title gradient-text floating">Dashboard</h2>
+                
+                <!-- User Profile Display -->
+                <div class="profile-section">
+                    <div class="profile-card glass-card card-hover-lift shimmer">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <span class="avatar-initials" id="user-initials">--</span>
+                            </div>
+                            <div class="profile-info">
+                                <h3 class="profile-name" id="user-name">Loading...</h3>
+                                <p class="profile-email" id="user-email">Loading...</p>
+                            </div>
+                            <button class="btn-edit-profile micro-bounce focus-ring" id="edit-profile-btn" aria-label="Edit profile">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="profile-details">
+                            <div class="profile-detail-item">
+                                <span class="detail-label">Age:</span>
+                                <span class="detail-value" id="user-age">--</span>
+                            </div>
+                            <div class="profile-detail-item">
+                                <span class="detail-label">Wallet ID:</span>
+                                <span class="detail-value" id="user-wallet-id">Not generated</span>
+                            </div>
+                            <div class="profile-detail-item">
+                                <span class="detail-label">Member since:</span>
+                                <span class="detail-value" id="user-member-since">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Edit Modal -->
+                <div id="profile-edit-modal" class="modal hidden" role="dialog" aria-labelledby="edit-profile-title" aria-hidden="true">
+                    <div class="modal-backdrop" id="profile-modal-backdrop"></div>
+                    <div class="modal-content glass-card backdrop-blur-xl">
+                        <div class="modal-header">
+                            <h3 id="edit-profile-title" class="modal-title">Edit Profile</h3>
+                            <button class="modal-close" id="close-profile-modal" aria-label="Close modal">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <form id="profile-edit-form" class="modal-body">
+                            <div class="form-group">
+                                <label for="edit-name" class="form-label">Name</label>
+                                <input type="text" id="edit-name" name="name" class="form-input" required>
+                                <span class="form-error" id="edit-name-error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-email" class="form-label">Email</label>
+                                <input type="email" id="edit-email" name="email" class="form-input" required>
+                                <span class="form-error" id="edit-email-error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-age" class="form-label">Age</label>
+                                <input type="number" id="edit-age" name="age" class="form-input" min="18" required>
+                                <span class="form-error" id="edit-age-error"></span>
+                            </div>
+                            <div class="modal-actions">
+                                <button type="button" class="btn btn-secondary" id="cancel-profile-edit">Cancel</button>
+                                <button type="submit" class="btn btn-primary btn-liquid ripple">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Wallet Connection Section -->
+                <div class="wallet-section">
+                    <div class="wallet-card glass-card card-hover-lift floating-delayed">
+                        <div class="wallet-header">
+                            <h3 class="wallet-title">Wallet Connection</h3>
+                            <div class="wallet-status" id="wallet-status" aria-live="polite">
+                                <span class="status-indicator" id="status-indicator" 
+                                      aria-label="Wallet disconnected" 
+                                      role="status"></span>
+                                <span class="status-text" id="status-text">Disconnected</span>
+                            </div>
+                        </div>
+                        
+                        <div class="wallet-content">
+                            <!-- Wallet Selection List -->
+                            <div class="wallet-list" id="wallet-list">
+                                <div class="wallet-item" data-wallet="blue">
+                                    <div class="wallet-logo">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232563eb'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='20' font-weight='bold'%3EBW%3C/text%3E%3C/svg%3E" alt="Blue Wallet" />
+                                    </div>
+                                    <div class="wallet-info">
+                                        <h4 class="wallet-name">Blue Wallet</h4>
+                                        <p class="wallet-description" id="blue-wallet-description">Lightning & Bitcoin wallet</p>
+                                    </div>
+                                    <button class="wallet-connect-btn" data-wallet="blue" 
+                                            aria-label="Connect Blue Wallet"
+                                            aria-describedby="blue-wallet-description">
+                                        <span class="connect-text">Connect</span>
+                                        <span class="disconnect-text hidden">Disconnect</span>
+                                    </button>
+                                </div>
+
+                                <div class="wallet-item" data-wallet="leather">
+                                    <div class="wallet-logo">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23a855f7'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='20' font-weight='bold'%3ELW%3C/text%3E%3C/svg%3E" alt="Leather Wallet" />
+                                    </div>
+                                    <div class="wallet-info">
+                                        <h4 class="wallet-name">Leather Wallet</h4>
+                                        <p class="wallet-description" id="leather-wallet-description">Bitcoin & Stacks wallet</p>
+                                    </div>
+                                    <button class="wallet-connect-btn" data-wallet="leather" 
+                                            aria-label="Connect Leather Wallet"
+                                            aria-describedby="leather-wallet-description">
+                                        <span class="connect-text">Connect</span>
+                                        <span class="disconnect-text hidden">Disconnect</span>
+                                    </button>
+                                </div>
+
+                                <div class="wallet-item" data-wallet="xverse">
+                                    <div class="wallet-logo">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23f59e0b'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='20' font-weight='bold'%3EXV%3C/text%3E%3C/svg%3E" alt="Xverse Wallet" />
+                                    </div>
+                                    <div class="wallet-info">
+                                        <h4 class="wallet-name">Xverse Wallet</h4>
+                                        <p class="wallet-description" id="xverse-wallet-description">Bitcoin & Ordinals wallet</p>
+                                    </div>
+                                    <button class="wallet-connect-btn" data-wallet="xverse" 
+                                            aria-label="Connect Xverse Wallet"
+                                            aria-describedby="xverse-wallet-description">
+                                        <span class="connect-text">Connect</span>
+                                        <span class="disconnect-text hidden">Disconnect</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Connected Wallet Info -->
+                            <div class="connected-wallet-info hidden" id="connected-wallet-info">
+                                <div class="connected-wallet-header">
+                                    <div class="connected-wallet-logo" id="connected-wallet-logo"></div>
+                                    <div class="connected-wallet-details">
+                                        <h4 class="connected-wallet-name" id="connected-wallet-name">--</h4>
+                                        <p class="connected-wallet-address" id="connected-wallet-address">--</p>
+                                    </div>
+                                    <button class="btn btn-secondary" id="disconnect-wallet-btn">Disconnect</button>
+                                </div>
+                                
+                                <div class="wallet-balance">
+                                    <div class="balance-item">
+                                        <span class="balance-label">Bitcoin Balance:</span>
+                                        <span class="balance-value" id="btc-balance">0.00000000 BTC</span>
+                                    </div>
+                                    <div class="balance-item">
+                                        <span class="balance-label">USD Value:</span>
+                                        <span class="balance-value" id="usd-balance">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Local Faucet Section -->
+                <div class="faucet-section">
+                    <div class="faucet-card glass-card card-hover-lift pulse-glow">
+                        <div class="faucet-header">
+                            <div class="faucet-icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 1v6m0 6v6"></path>
+                                    <path d="m9 9 3-3 3 3"></path>
+                                    <path d="m9 15 3 3 3-3"></path>
+                                    <path d="M20 3h-8"></path>
+                                    <path d="M20 21h-8"></path>
+                                    <path d="M3 12h18"></path>
+                                </svg>
+                            </div>
+                            <div class="faucet-info">
+                                <h3 class="faucet-title">Bitcoin Faucet</h3>
+                                <p class="faucet-description">Get free test bitcoins for transactions</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faucet-content">
+                            <div class="faucet-amount">
+                                <span class="amount-label">Amount per use:</span>
+                                <span class="amount-value">0.012 BTC</span>
+                            </div>
+                            
+                            <div class="faucet-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Times used:</span>
+                                    <span class="stat-value" id="faucet-usage-count">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Total received:</span>
+                                    <span class="stat-value" id="faucet-total-received">0.00000000 BTC</span>
+                                </div>
+                            </div>
+                            
+                            <div class="faucet-actions">
+                                <button class="btn-faucet btn-liquid ripple neon-secondary" id="faucet-btn">
+                                    <div class="faucet-btn-content">
+                                        <div class="faucet-btn-icon">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M7 10v12"></path>
+                                                <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="faucet-btn-text">Claim Bitcoin</span>
+                                    </div>
+                                    <div class="faucet-btn-effect"></div>
+                                </button>
+                                
+                                <div class="faucet-cooldown hidden" id="faucet-cooldown">
+                                    <div class="cooldown-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12,6 12,12 16,14"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span class="cooldown-text">Next claim in: <span id="cooldown-timer">--</span></span>
+                                </div>
+                            </div>
+                            
+                            <div class="faucet-notice">
+                                <div class="notice-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="m9 12 2 2 4-4"></path>
+                                    </svg>
+                                </div>
+                                <p class="notice-text">
+                                    This is a test faucet for demonstration purposes. 
+                                    Bitcoin will be added to your connected wallet balance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- Pay section -->
+        <section id="pay-section" class="section pay-section hidden" aria-labelledby="pay-heading">
+            <div class="container">
+                <h2 id="pay-heading" class="section-title gradient-text floating">Send Payment</h2>
+                
+                <!-- Wallet Connection Check -->
+                <div class="wallet-check-section" id="wallet-check-section">
+                    <div class="wallet-check-card glass-card card-hover-lift">
+                        <div class="wallet-check-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+                                <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+                            </svg>
+                        </div>
+                        <div class="wallet-check-content">
+                            <h3 class="wallet-check-title">Wallet Connection Required</h3>
+                            <p class="wallet-check-description">
+                                Please connect a wallet to send payments. You can connect your wallet from the Home page.
+                            </p>
+                            <div class="wallet-check-actions">
+                                <button class="btn btn-primary btn-liquid ripple" id="go-to-home-btn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                    </svg>
+                                    Go to Home
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Interface -->
+                <div class="payment-interface hidden" id="payment-interface">
+                    <!-- Balance Display -->
+                    <div class="balance-section">
+                        <div class="balance-card glass-effect">
+                            <div class="balance-header">
+                                <div class="balance-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M12 6v6l4 2"></path>
+                                    </svg>
+                                </div>
+                                <div class="balance-info">
+                                    <h3 class="balance-title">Current Balance</h3>
+                                    <p class="balance-subtitle">Available for payments</p>
+                                </div>
+                            </div>
+                            <div class="balance-amounts">
+                                <div class="balance-item">
+                                    <span class="balance-label">Bitcoin:</span>
+                                    <span class="balance-value btc" id="current-btc-balance">0.00000000 BTC</span>
+                                </div>
+                                <div class="balance-item">
+                                    <span class="balance-label">USD Value:</span>
+                                    <span class="balance-value usd" id="current-usd-balance">$0.00</span>
+                                </div>
+                            </div>
+                            <div class="connected-wallet-info">
+                                <div class="connected-wallet-badge">
+                                    <div class="wallet-logo-small" id="payment-wallet-logo"></div>
+                                    <span class="wallet-name" id="payment-wallet-name">No wallet connected</span>
+                                    <div class="connection-status connected" id="payment-connection-status">
+                                        <span class="status-dot"></span>
+                                        <span class="status-text">Connected</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Form -->
+                    <div class="payment-form-section">
+                        <div class="payment-form-card glass-effect">
+                            <div class="payment-form-header">
+                                <div class="payment-form-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 1v22"></path>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                </div>
+                                <div class="payment-form-info">
+                                    <h3 class="payment-form-title">Send Bitcoin Payment</h3>
+                                    <p class="payment-form-subtitle">Enter recipient details and amount</p>
+                                </div>
+                            </div>
+
+                            <form class="payment-form" id="payment-form" novalidate>
+                                <div class="form-group">
+                                    <label for="recipient-wallet" class="form-label">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                                            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+                                            <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+                                        </svg>
+                                        Recipient Wallet ID
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="payment-recipient" 
+                                        name="recipient" 
+                                        class="form-input" 
+                                        placeholder="Enter recipient wallet address"
+                                        required
+                                    >
+                                    <span class="form-error" id="recipient-error"></span>
+                                    <div class="form-help">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        Enter a valid Bitcoin wallet address
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="payment-amount" class="form-label">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 1v22"></path>
+                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                        </svg>
+                                        Amount (BTC)
+                                    </label>
+                                    <div class="amount-input-group">
+                                        <input 
+                                            type="number" 
+                                            id="payment-amount" 
+                                            name="amount" 
+                                            class="form-input" 
+                                            placeholder="0.00000000"
+                                            step="0.00000001"
+                                            min="0.00000001"
+                                            required
+                                        >
+                                        <div class="amount-suffix">BTC</div>
+                                    </div>
+                                    <span class="form-error" id="amount-error"></span>
+                                    <div class="amount-conversion">
+                                        <span class="conversion-label">USD Value:</span>
+                                        <span class="conversion-value" id="amount-usd-value">$0.00</span>
+                                    </div>
+                                    <div class="form-help">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        Minimum amount: 0.00000001 BTC
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="payment-note" class="form-label">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14,2 14,8 20,8"></polyline>
+                                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                                            <polyline points="10,9 9,9 8,9"></polyline>
+                                        </svg>
+                                        Payment Note (Optional)
+                                    </label>
+                                    <textarea 
+                                        id="payment-note" 
+                                        name="note" 
+                                        class="form-input" 
+                                        placeholder="Add a note for this payment (optional)"
+                                        rows="3"
+                                        maxlength="200"
+                                    ></textarea>
+                                    <div class="form-help">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        Optional note for your records (max 200 characters)
+                                    </div>
+                                </div>
+
+                                <div class="payment-summary">
+                                    <div class="summary-header">
+                                        <h4 class="summary-title">Payment Summary</h4>
+                                    </div>
+                                    <div class="summary-items">
+                                        <div class="summary-item">
+                                            <span class="summary-label">Amount:</span>
+                                            <span class="summary-value" id="summary-amount">0.00000000 BTC</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">USD Value:</span>
+                                            <span class="summary-value" id="summary-usd">$0.00</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Network Fee:</span>
+                                            <span class="summary-value">0.00000500 BTC</span>
+                                        </div>
+                                        <div class="summary-item total">
+                                            <span class="summary-label">Total:</span>
+                                            <span class="summary-value" id="summary-total">0.00000000 BTC</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Remaining Balance:</span>
+                                            <span class="summary-value" id="summary-remaining">0.00000000 BTC</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="payment-actions">
+                                    <button type="button" class="btn btn-secondary" id="clear-payment-form">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M3 6h18"></path>
+                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                        </svg>
+                                        Clear Form
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" id="send-payment-btn">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                                            <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+                                        </svg>
+                                        Send Payment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transactions section -->
+        <section id="transactions-section" class="section transactions-section hidden" aria-labelledby="transactions-heading">
+            <div class="container">
+                <h2 id="transactions-heading" class="section-title">Transaction History</h2>
+                
+                <!-- Transaction Filters and Controls -->
+                <div class="transaction-controls">
+                    <div class="transaction-filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="pending">Pending</button>
+                        <button class="filter-btn" data-filter="failed">Failed</button>
+                        <button class="filter-btn" data-filter="autopay">Autopay</button>
+                    </div>
+                    <div class="transaction-filters glass-effect">
+                        <div class="filter-group">
+                            <label for="transaction-status-filter" class="filter-label">Status:</label>
+                            <select id="transaction-status-filter" class="filter-select">
+                                <option value="all">All Transactions</option>
+                                <option value="completed">Completed</option>
+                                <option value="pending">Pending</option>
+                                <option value="failed">Failed</option>
+                                <option value="autopay">Autopay</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="transaction-sort" class="filter-label">Sort by:</label>
+                            <select id="transaction-sort" class="filter-select">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="amount-high">Amount (High to Low)</option>
+                                <option value="amount-low">Amount (Low to High)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="transaction-search" class="filter-label">Search:</label>
+                            <input type="text" id="transaction-search" class="filter-input" placeholder="Search transactions...">
+                        </div>
+                        
+                        <button class="btn-refresh" id="refresh-transactions" aria-label="Refresh transactions">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Transaction Statistics -->
+                <div class="transaction-stats">
+                    <div class="stats-grid">
+                        <div class="stat-card glass-effect">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 1v22"></path>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="total-transactions">0</div>
+                                <div class="stat-label">Total Transactions</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card glass-effect">
+                            <div class="stat-icon success">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m9 12 2 2 4-4"></path>
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="completed-transactions">0</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card glass-effect">
+                            <div class="stat-icon warning">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 6v6l4 2"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="pending-transactions">0</div>
+                                <div class="stat-label">Pending</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card glass-effect">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2v20"></path>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="total-volume">0.00000000 BTC</div>
+                                <div class="stat-label">Total Volume</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction List -->
+                <div class="transaction-list-container">
+                    <div class="transactions-list" id="transactions-list">
+                        <!-- Transactions will be dynamically loaded here -->
+                        <div class="empty-state" id="empty-transactions">
+                            <div class="empty-state-icon">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M9 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"></path>
+                                </svg>
+                            </div>
+                            <h3 class="empty-state-title">No Transactions Yet</h3>
+                            <p class="empty-state-description">
+                                Your transaction history will appear here once you start making payments.
+                            </p>
+                            <button class="btn btn-primary" id="make-first-payment">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 1v22"></path>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                                Make Your First Payment
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div class="transaction-loading hidden" id="transaction-loading">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">Loading transactions...</p>
+                    </div>
+                </div>
+
+                <!-- Transaction Detail Modal -->
+                <div id="transaction-detail-modal" class="modal hidden" role="dialog" aria-labelledby="transaction-detail-title" aria-hidden="true">
+                    <div class="modal-backdrop" id="transaction-modal-backdrop"></div>
+                    <div class="modal-content glass-effect">
+                        <div class="modal-header">
+                            <h3 id="transaction-detail-title" class="modal-title">Transaction Details</h3>
+                            <button class="modal-close" id="close-transaction-modal" aria-label="Close modal">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="transaction-detail-content">
+                            <!-- Transaction details will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Autopay section -->
+        <section id="autopay-section" class="section autopay-section hidden" aria-labelledby="autopay-heading">
+            <div class="container">
+                <h2 id="autopay-heading" class="section-title">Automated Payments</h2>
+                
+                <!-- Wallet Connection Check -->
+                <div class="wallet-check-section" id="autopay-wallet-check-section">
+                    <div class="wallet-check-card glass-effect">
+                        <div class="wallet-check-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+                                <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+                            </svg>
+                        </div>
+                        <div class="wallet-check-content">
+                            <h3 class="wallet-check-title">Wallet Connection Required</h3>
+                            <p class="wallet-check-description">
+                                Please connect a wallet to set up automated payments. You can connect your wallet from the Home page.
+                            </p>
+                            <div class="wallet-check-actions">
+                                <button class="btn btn-primary" id="autopay-go-to-home-btn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                    </svg>
+                                    Go to Home
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Autopay Interface -->
+                <div class="autopay-interface hidden" id="autopay-interface">
+                    <!-- Autopay Setup Form -->
+                    <div class="autopay-setup-section">
+                        <div class="autopay-setup-card glass-effect">
+                            <div class="autopay-setup-header">
+                                <div class="autopay-setup-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12,6 12,12 16,14"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="autopay-setup-info">
+                                    <h3 class="autopay-setup-title">Set Up Automated Payment</h3>
+                                    <p class="autopay-setup-subtitle">Configure automatic payments with custom conditions</p>
+                                </div>
+                            </div>
+
+                            <form class="autopay-setup-form" id="autopay-form" novalidate>
+                                <div class="form-group">
+                                    <label for="autopay-recipient" class="form-label">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                                            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+                                            <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+                                        </svg>
+                                        Recipient Wallet ID
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="autopay-recipient" 
+                                        name="recipient" 
+                                        class="form-input" 
+                                        placeholder="Enter recipient wallet address"
+                                        required
+                                    >
+                                    <span class="form-error" id="autopay-recipient-error"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="autopay-amount" class="form-label">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 1v22"></path>
+                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                        </svg>
+                                        Payment Amount (BTC)
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="autopay-amount" 
+                                        name="amount" 
+                                        class="form-input" 
+                                        placeholder="0.00000000"
+                                        step="0.00000001"
+                                        min="0.00000001"
+                                        required
+                                    >
+                                    <span class="form-error" id="autopay-amount-error"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="autopay-condition" class="form-label">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 12l2 2 4-4"></path>
+                                            <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.12 0 4.07.74 5.61 1.98"></path>
+                                        </svg>
+                                        Payment Condition
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="autopay-condition" 
+                                        name="condition" 
+                                        class="form-input" 
+                                        placeholder="e.g., every minute, balance > 0.01, random"
+                                        required
+                                    >
+                                    <span class="form-error" id="autopay-condition-error"></span>
+                                    <div class="form-help">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        Enter a condition that will trigger the payment (e.g., "every 30 seconds", "balance > 0.01")
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="test-condition-btn">Test Condition</button>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="autopay-condition-type" class="form-label">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 12l2 2 4-4"></path>
+                                            <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.12 0 4.07.74 5.61 1.98"></path>
+                                        </svg>
+                                        Trigger Condition
+                                    </label>
+                                    <select id="autopay-condition-type" name="conditionType" class="form-input" required>
+                                        <option value="">Select condition type</option>
+                                        <option value="time">Time-based (Recurring)</option>
+                                        <option value="balance">Balance threshold</option>
+                                        <option value="manual">Manual trigger</option>
+                                        <option value="x402">x402 Protocol Event</option>
+                                    </select>
+                                    <span class="form-error" id="autopay-condition-type-error"></span>
+                                </div>
+
+                                <!-- Time-based condition -->
+                                <div class="condition-details hidden" id="time-condition-details">
+                                    <div class="form-group">
+                                        <label for="autopay-interval" class="form-label">Payment Interval</label>
+                                        <select id="autopay-interval" name="interval" class="form-input">
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly">Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Balance threshold condition -->
+                                <div class="condition-details hidden" id="balance-condition-details">
+                                    <div class="form-group">
+                                        <label for="autopay-threshold" class="form-label">Balance Threshold (BTC)</label>
+                                        <input 
+                                            type="number" 
+                                            id="autopay-threshold" 
+                                            name="threshold" 
+                                            class="form-input" 
+                                            placeholder="0.00000000"
+                                            step="0.00000001"
+                                            min="0"
+                                        >
+                                        <div class="form-help">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <path d="m9 12 2 2 4-4"></path>
+                                            </svg>
+                                            Payment will trigger when balance exceeds this amount
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- x402 Protocol condition -->
+                                <div class="condition-details hidden" id="x402-condition-details">
+                                    <div class="form-group">
+                                        <label for="autopay-x402-event" class="form-label">x402 Event Type</label>
+                                        <input 
+                                            type="text" 
+                                            id="autopay-x402-event" 
+                                            name="x402Event" 
+                                            class="form-input" 
+                                            placeholder="e.g., content_access, api_call, service_usage"
+                                        >
+                                        <div class="form-help">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <path d="m9 12 2 2 4-4"></path>
+                                            </svg>
+                                            Specify the x402 protocol event that will trigger payment
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="autopay-description" class="form-label">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14,2 14,8 20,8"></polyline>
+                                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                                            <polyline points="10,9 9,9 8,9"></polyline>
+                                        </svg>
+                                        Description (Optional)
+                                    </label>
+                                    <textarea 
+                                        id="autopay-description" 
+                                        name="description" 
+                                        class="form-input" 
+                                        placeholder="Describe the purpose of this automated payment"
+                                        rows="3"
+                                    ></textarea>
+                                </div>
+
+                                <div class="autopay-setup-actions">
+                                    <button type="button" class="btn btn-secondary" id="autopay-cancel-btn">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                        </svg>
+                                        Create Autopay Rule
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Autopay Management Dashboard -->
+                    <div class="autopay-management-section">
+                        <div class="autopay-management-card glass-effect">
+                            <div class="autopay-management-header">
+                                <div class="autopay-management-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </div>
+                                <div class="autopay-management-info">
+                                    <h3 class="autopay-management-title">Active Autopay Rules</h3>
+                                    <p class="autopay-management-subtitle">Manage your automated payment configurations</p>
+                                </div>
+                                <div class="autopay-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="total-autopay-rules">0</span>
+                                        <span class="stat-label">Total</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="active-autopay-rules">0</span>
+                                        <span class="stat-label">Active</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="total-autopay-triggers">0</span>
+                                        <span class="stat-label">Triggers</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="autopay-rules-list" id="autopay-rules-list">
+                                <div class="empty-state" id="autopay-empty-state">
+                                    <div class="empty-state-icon">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12,6 12,12 16,14"></polyline>
+                                        </svg>
+                                    </div>
+                                    <h4 class="empty-state-title">No Autopay Rules</h4>
+                                    <p class="empty-state-description">
+                                        You haven't set up any automated payments yet. Create your first autopay rule to get started.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- x402 Testing Interface -->
+                    <div class="x402-testing-section">
+                        <div class="x402-testing-card glass-effect">
+                            <div class="x402-testing-header">
+                                <div class="x402-testing-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="x402-testing-info">
+                                    <h3 class="x402-testing-title">x402 Protocol Testing</h3>
+                                    <p class="x402-testing-subtitle">Manually trigger x402 events for testing autopay rules</p>
+                                </div>
+                            </div>
+
+                            <div class="x402-testing-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="AutopayMonitor.manualTriggerX402Event('content_access')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14,2 14,8 20,8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        <polyline points="10,9 9,9 8,9"></polyline>
+                                    </svg>
+                                    Content Access
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="AutopayMonitor.manualTriggerX402Event('api_call')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                    </svg>
+                                    API Call
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="AutopayMonitor.manualTriggerX402Event('service_usage')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                    </svg>
+                                    Service Usage
+                                </button>
+                            </div>
+                            
+                            <div class="x402-testing-note">
+                                <div class="note-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="m9 12 2 2 4-4"></path>
+                                    </svg>
+                                </div>
+                                <p class="note-text">
+                                    These buttons simulate x402 protocol events. Only autopay rules configured for the corresponding event type will be triggered.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Autopay Trigger Messages -->
+                    <div class="autopay-messages" id="autopay-messages"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <p class="footer-text">&copy; 2024 SatsPay. Bitcoin wallet management made simple.</p>
+        </div>
+    </footer>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Loading...</p>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- Scripts -->
+    <script src="js/app.js" defer></script>
+</body>
+</html>

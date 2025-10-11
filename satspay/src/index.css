@@ -1,0 +1,262 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import './styles/optimized-animations.css';
+
+/* Base styles for professional financial application */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: theme('colors.secondary.50');
+    color: theme('colors.secondary.900');
+  }
+
+  code {
+    font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+
+  /* Professional focus styles */
+  *:focus {
+    outline: 2px solid theme('colors.primary.500');
+    outline-offset: 2px;
+  }
+
+  /* Remove default focus for mouse users */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/* Component layer for reusable professional styles */
+@layer components {
+  /* Professional card styles */
+  .card-professional {
+    @apply bg-white rounded-xl shadow-sm border border-secondary-200 transition-all duration-300;
+  }
+
+  .card-professional:hover {
+    @apply shadow-lg border-primary-300;
+  }
+
+  /* Financial data display */
+  .financial-amount {
+    @apply font-mono text-lg font-semibold tracking-tight;
+  }
+
+  .financial-amount-large {
+    @apply font-mono text-2xl font-bold tracking-tight;
+  }
+
+  .financial-amount-small {
+    @apply font-mono text-sm font-medium tracking-tight;
+  }
+
+  /* Status indicators */
+  .status-success {
+    @apply bg-success-100 text-success-800 border border-success-200;
+  }
+
+  .status-warning {
+    @apply bg-warning-100 text-warning-800 border border-warning-200;
+  }
+
+  .status-error {
+    @apply bg-error-100 text-error-800 border border-error-200;
+  }
+
+  .status-pending {
+    @apply bg-secondary-100 text-secondary-800 border border-secondary-200;
+  }
+
+  /* Professional buttons */
+  .btn-professional {
+    @apply font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 shadow-sm;
+  }
+
+  .btn-professional:hover {
+    @apply shadow-md transform scale-105;
+  }
+
+  .btn-professional:active {
+    @apply transform scale-95;
+  }
+
+  /* Professional form inputs */
+  .input-professional {
+    @apply block w-full px-4 py-3 border border-secondary-300 rounded-lg shadow-sm placeholder-secondary-400 transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+    @apply bg-white text-secondary-900;
+  }
+
+  .input-professional:focus {
+    @apply shadow-md;
+  }
+
+  /* Professional navigation */
+  .nav-professional {
+    @apply bg-white/95 backdrop-blur-sm border-b border-secondary-200 shadow-sm;
+  }
+
+  /* Professional gradients */
+  .gradient-professional {
+    @apply bg-gradient-to-br from-secondary-50 via-white to-primary-50;
+  }
+
+  .gradient-financial {
+    @apply bg-gradient-to-r from-primary-600 to-primary-700;
+  }
+
+  /* Professional animations */
+  .animate-professional-fade {
+    @apply animate-fade-in;
+  }
+
+  .animate-professional-slide {
+    @apply animate-slide-up;
+  }
+
+  /* Professional spacing */
+  .section-professional {
+    @apply py-8 px-6 lg:py-12 lg:px-8;
+  }
+
+  .container-professional {
+    @apply max-w-7xl mx-auto;
+  }
+}
+
+/* Utility layer for professional enhancements */
+@layer utilities {
+  /* Hardware acceleration for better performance */
+  .transform-gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Professional text rendering */
+  .text-crisp {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Professional shadows */
+  .shadow-professional {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .shadow-professional-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Professional borders */
+  .border-professional {
+    @apply border border-secondary-200;
+  }
+
+  .border-professional-hover:hover {
+    @apply border-primary-300;
+  }
+
+  /* Professional backgrounds */
+  .bg-professional {
+    @apply bg-white;
+  }
+
+  .bg-professional-muted {
+    @apply bg-secondary-50;
+  }
+
+  .bg-professional-accent {
+    @apply bg-primary-50;
+  }
+}
+
+/* Custom animations for professional feel */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes professional-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(14, 165, 233, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+  }
+}
+
+@keyframes professional-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Professional loading states */
+.loading-professional {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-professional::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card-professional {
+    @apply border-2 border-secondary-400;
+  }
+  
+  .btn-professional {
+    @apply border-2;
+  }
+}

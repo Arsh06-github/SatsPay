@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SatsPay Data Persistence Tests</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8fafc;
+            color: #1f2937;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3a8a, #059669);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: #1e3a8a;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1e40af;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #059669;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #047857;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+        }
+        
+        .test-output {
+            background-color: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+        
+        .test-info {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .test-info h3 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+        
+        .requirements-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .requirements-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .requirements-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-ready {
+            background-color: #10b981;
+        }
+        
+        .status-running {
+            background-color: #f59e0b;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-error {
+            background-color: #ef4444;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #1e3a8a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 SatsPay Data Persistence Tests</h1>
+        <p>Unit tests for localStorage operations, state management, and data recovery mechanisms</p>
+    </div>
+
+    <div class="test-info">
+        <h3>📋 Test Coverage</h3>
+        <p>This test suite validates the following requirements:</p>
+        <ul class="requirements-list">
+            <li><span class="status-indicator status-ready"></span><strong>Requirement 10.1:</strong> User data storage in local storage</li>
+            <li><span class="status-indicator status-ready"></span><strong>Requirement 10.3:</strong> Transaction records storage in local storage</li>
+            <li><span class="status-indicator status-ready"></span><strong>Requirement 10.4:</strong> Data restoration from local storage on refresh</li>
+        </ul>
+        
+        <h4>🔧 Test Components:</h4>
+        <ul>
+            <li><strong>Enhanced Storage Manager:</strong> Serialization, backup/recovery, validation, export/import</li>
+            <li><strong>State Manager:</strong> State persistence, subscriptions, middleware, error handling</li>
+            <li><strong>State Synchronizer:</strong> Legacy data migration, component integration</li>
+        </ul>
+    </div>
+
+    <div class="test-controls">
+        <button class="btn btn-primary" onclick="runAllTests()">🚀 Run All Tests</button>
+        <button class="btn btn-secondary" onclick="runStorageTests()">💾 Storage Tests Only</button>
+        <button class="btn btn-secondary" onclick="runStateTests()">🔄 State Tests Only</button>
+        <button class="btn btn-secondary" onclick="runSyncTests()">🔗 Sync Tests Only</button>
+        <button class="btn btn-danger" onclick="clearOutput()">🗑️ Clear Output</button>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Running tests...</p>
+    </div>
+
+    <div class="test-output" id="output">
+        Ready to run tests. Click "Run All Tests" to begin.
+        
+        📝 Test Instructions:
+        1. Click any test button to start testing
+        2. Watch the console output for detailed results
+        3. All tests run in an isolated environment with mocked localStorage
+        4. Tests validate data persistence, recovery, and state management functionality
+        
+        🎯 Expected Results:
+        - All localStorage operations should work correctly
+        - State management should persist and restore data
+        - Data recovery mechanisms should handle errors gracefully
+        - Legacy data migration should work seamlessly
+    </div>
+
+    <!-- Load dependencies -->
+    <script src="js/storage-manager.js"></script>
+    <script src="js/state-manager.js"></script>
+    <script src="js/state-sync.js"></script>
+    <script src="js/data-persistence.test.js"></script>
+
+    <script>
+        let isTestRunning = false;
+        
+        // Override console methods to capture output
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+        
+        function captureConsoleOutput() {
+            const output = document.getElementById('output');
+            
+            ['log', 'error', 'warn', 'info'].forEach(method => {
+                console[method] = function(...args) {
+                    originalConsole[method].apply(console, args);
+                    
+                    const message = args.map(arg => 
+                        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                    ).join(' ');
+                    
+                    output.textContent += message + '\n';
+                    output.scrollTop = output.scrollHeight;
+                };
+            });
+        }
+        
+        function restoreConsoleOutput() {
+            Object.assign(console, originalConsole);
+        }
+        
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            loading.style.display = show ? 'block' : 'none';
+            isTestRunning = show;
+            
+            // Disable buttons during test run
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.disabled = show;
+                btn.style.opacity = show ? '0.6' : '1';
+                btn.style.cursor = show ? 'not-allowed' : 'pointer';
+            });
+        }
+        
+        function clearOutput() {
+            if (isTestRunning) return;
+            document.getElementById('output').textContent = 'Output cleared. Ready to run tests.';
+        }
+        
+        async function runAllTests() {
+            if (isTestRunning) return;
+            
+            showLoading(true);
+            captureConsoleOutput();
+            
+            try {
+                const testRunner = new DataPersistenceTestRunner();
+                await testRunner.runAllTests();
+            } catch (error) {
+                console.error('Test execution failed:', error);
+            } finally {
+                restoreConsoleOutput();
+                showLoading(false);
+            }
+        }
+        
+        async function runStorageTests() {
+            if (isTestRunning) return;
+            
+            showLoading(true);
+            captureConsoleOutput();
+            
+            try {
+                const storageTests = new StorageManagerTests();
+                await storageTests.runAllStorageTests();
+                
+                const passed = storageTests.testResults.filter(r => r.status === 'PASS').length;
+                const total = storageTests.testResults.length;
+                console.log(`\n📊 Storage Tests Summary: ${passed}/${total} passed`);
+            } catch (error) {
+                console.error('Storage test execution failed:', error);
+            } finally {
+                restoreConsoleOutput();
+                showLoading(false);
+            }
+        }
+        
+        async function runStateTests() {
+            if (isTestRunning) return;
+            
+            showLoading(true);
+            captureConsoleOutput();
+            
+            try {
+                const stateTests = new StateManagerTests();
+                await stateTests.runAllStateTests();
+                
+                const passed = stateTests.testResults.filter(r => r.status === 'PASS').length;
+                const total = stateTests.testResults.length;
+                console.log(`\n📊 State Tests Summary: ${passed}/${total} passed`);
+            } catch (error) {
+                console.error('State test execution failed:', error);
+            } finally {
+                restoreConsoleOutput();
+                showLoading(false);
+            }
+        }
+        
+        async function runSyncTests() {
+            if (isTestRunning) return;
+            
+            showLoading(true);
+            captureConsoleOutput();
+            
+            try {
+                const syncTests = new StateSynchronizerTests();
+                await syncTests.runAllSynchronizerTests();
+                
+                const passed = syncTests.testResults.filter(r => r.status === 'PASS').length;
+                const total = syncTests.testResults.length;
+                console.log(`\n📊 Sync Tests Summary: ${passed}/${total} passed`);
+            } catch (error) {
+                console.error('Sync test execution failed:', error);
+            } finally {
+                restoreConsoleOutput();
+                showLoading(false);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Data Persistence Test Runner loaded');
+            console.log('Click any test button to begin testing');
+        });
+    </script>
+</body>
+</html>
